@@ -1,0 +1,133 @@
+/* About.css */
+
+.about-container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+}
+
+.profile-header {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #e1e4e8;
+  padding-bottom: 20px;
+}
+
+.profile-picture-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center the content horizontally */
+  margin-right: 20px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 2px solid #e1e4e8;
+  margin-bottom: 10px; /* Add margin to space between image and button */
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h2 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+
+.profile-info p {
+  margin: 0 0 5px;
+}
+
+.profile-info a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.profile-info a:hover {
+  text-decoration: underline;
+}
+
+.profile-stats {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.profile-stats p {
+  margin: 0;
+}
+
+.profile-stats span {
+  font-weight: bold;
+}
+
+.follow-button {
+  display: inline-block;
+  padding: 5px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #24292e;
+  background-color: #eff3f6;
+  border: 1px solid rgba(27, 31, 35, 0.15);
+  border-radius: 6px;
+  text-decoration: none;
+  cursor: pointer;
+  margin-top: 10px;
+  width: 150px; /* Make the button wider */
+  text-align: center; /* Center the text */
+}
+
+.follow-button:hover {
+  background-color: #e6ebf1;
+  border-color: rgba(27, 31, 35, 0.35);
+}
+
+.pinned-repos {
+  margin-top: 40px;
+}
+
+.pinned-repos h3 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.repo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.repo-card {
+  border: 1px solid #e1e4e8;
+  border-radius: 6px;
+  padding: 20px;
+  background-color: #ffffff;
+}
+
+.repo-card h4 {
+  margin: 0 0 10px;
+  font-size: 20px;
+}
+
+.repo-card p {
+  margin: 0 0 10px;
+  font-size: 14px;
+  color: #586069;
+}
+
+.repo-stats {
+  display: flex;
+  gap: 10px;
+  font-size: 14px;
+  color: #586069;
+}
+
+.repo-stats span {
+  display: flex;
+  align-items: center;
+}
