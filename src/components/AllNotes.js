@@ -116,24 +116,27 @@ const AllNotes = () => {
       eid: currentNote._id,
       etitle: currentNote.title,
       edescription: currentNote.description,
-      efavourite:currentNote.favourite,
+      efavourite: currentNote.favourite, // Comes from database initially
       etag: currentNote.tag,
       eimage: currentNote.image ? `${BASE_URL}${currentNote.image}` : null,
       eaudio: currentNote.audio ? `${BASE_URL}${currentNote.audio}` : null,
       previewImage: currentNote.image ? `${BASE_URL}${currentNote.image}` : null,
       previewAudio: currentNote.audio ? `${BASE_URL}${currentNote.audio}` : null,
     });
-    setTranscript(currentNote.transcript || "");
+  
+    setFav(currentNote.favourite); // Set fav based on database value initially
   };
+  
 
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
   };
 
   const favchange = () => {
+    setFav((prevFav) => !prevFav);
     toggleFavourite(note.eid);
-    setFav(!fav);
   };
+  
 
   const handleFileChange = (e) => {
     const { name, files } = e.target;
@@ -287,10 +290,10 @@ const AllNotes = () => {
                         />
                         Your browser does not support the audio element.
                       </audio>
-                      <div className="mt-2">
+                      {/* <div className="mt-2">
                         <strong>Transcript:</strong>
                         <p>{transcript}</p>
-                      </div>
+                      </div> */}
                     </>
                   ) : (
                     <p>No audio uploaded</p>
@@ -316,19 +319,10 @@ const AllNotes = () => {
               >
                 Cancel
               </button>
-              {note.efavourite?<button
-                className="btn btn-warning mx-2"
-                onClick={() => favchange()}
-              >
-                {note.efavourite? "Make Unfavourite" : " Make Favourite"}
-              </button>:
-              <button
-              className="btn btn-warning mx-2"
-              onClick={() => favchange()}
-            >
-              {fav ? "Make Unfavourite" : "Make Favourite"}
-            </button>
-              }
+              
+              <button className="btn btn-warning mx-2" onClick={favchange}>
+  {fav ? "Make Unfavourite" : "Make Favourite"}
+</button>
               <button
                 disabled={
                   note.etitle.length < 3 || note.edescription.length < 4
