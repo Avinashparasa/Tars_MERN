@@ -7,16 +7,21 @@ function truncateText(text, maxLength) {
     : text;
 }
 
-function NoteItem({ note, updateNote, nothing ,what,toggleFavourite}) {
+function NoteItem({ note, updateNote, nothing, what, toggleFavourite }) {
   const [showModal, setShowModal] = useState(false);
   const [descriptionText, setDescriptionText] = useState("");
+  const [copySuccessCard, setCopySuccessCard] = useState(false);
+  const [copySuccessModal, setCopySuccessModal] = useState(false);
   const modalBodyRef = useRef(null);
 
   const context = useContext(NoteContext);
   const { deleteNote } = context;
 
   const openModal = () => setShowModal(true);
-  const closeModal = () => setShowModal(false);
+  const closeModal = () => {
+    setShowModal(false);
+    setCopySuccessModal(false);
+  };
 
   useEffect(() => {
     setDescriptionText(note.description);
@@ -27,6 +32,19 @@ function NoteItem({ note, updateNote, nothing ,what,toggleFavourite}) {
       modalBodyRef.current.style.whiteSpace = "pre";
     }
   }, [descriptionText]);
+
+  const copyToClipboard = (type) => {
+    const textToCopy = `Title: ${note.title}\nDescription: ${note.description}`;
+    navigator.clipboard.writeText(textToCopy).then(() => {
+      if (type === "card") {
+        setCopySuccessCard(true);
+        setTimeout(() => setCopySuccessCard(false), 1500);
+      } else {
+        setCopySuccessModal(true);
+        setTimeout(() => setCopySuccessModal(false), 1500);
+      }
+    });
+  };
 
   const tagStyle = {
     display: "inline-block",
@@ -39,16 +57,16 @@ function NoteItem({ note, updateNote, nothing ,what,toggleFavourite}) {
   };
 
   return (
-    
     <div className="col-md-3 mb-4 mx-2">
-      
       <div className="card h-100 shadow-sm">
         <div className="card-body">
           <div className="d-flex justify-content-between align-items-center mb-3">
             <h5 className="card-title mb-0">{truncateText(note.title, 25)}</h5>
             <span style={tagStyle}>{note.tag}</span>
           </div>
-          <p className="card-text text-muted">{truncateText(note.description, 58)}</p>
+          <p className="card-text text-muted">
+            {truncateText(note.description, 58)}
+          </p>
           <div className="d-flex justify-content-between align-items-center">
             <button
               type="button"
@@ -74,6 +92,14 @@ function NoteItem({ note, updateNote, nothing ,what,toggleFavourite}) {
               </div>
             )}
           </div>
+          {/* Copy Button Outside Modal */}
+          <button
+            className="btn btn-sm btn-success mt-2"
+            onClick={() => copyToClipboard("card")}
+            disabled={copySuccessCard}
+          >
+            {copySuccessCard ? "Copied!" : "Copy to Clipboard"}
+          </button>
         </div>
       </div>
 
@@ -110,12 +136,19 @@ function NoteItem({ note, updateNote, nothing ,what,toggleFavourite}) {
                 >
                   Close
                 </button>
+                {/* Copy Button Inside Modal */}
+                <button
+                  className="btn btn-success"
+                  onClick={() => copyToClipboard("modal")}
+                  disabled={copySuccessModal}
+                >
+                  {copySuccessModal ? "Copied!" : "Copy to Clipboard"}
+                </button>
               </div>
             </div>
           </div>
         </div>
       )}
-      
     </div>
   );
 }
