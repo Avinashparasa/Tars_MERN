@@ -2,8 +2,7 @@ import "./App.css";
 import React from "react";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import AboutUS from "./pages/AboutUS";
-import About from "./pages/About";
+
 import AlertState from "./context/alert/alertState";
 import Alert from "./components/Alert";
 import Login from "./components/Auth/Login";
@@ -26,8 +25,7 @@ function App() {
             <div className="container">
               <Routes>
                 <Route path="/" element={<Home />} />
-                <Route path="/about" element={<About />} />
-                <Route path="/aboutUs" element={<AboutUS />} />
+                
                 <Route path="/login" element={<Login />} />
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/settings" element={

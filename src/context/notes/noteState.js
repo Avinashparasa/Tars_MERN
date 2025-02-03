@@ -6,10 +6,10 @@ const NoteState = (props) => {
   const host = process.env.REACT_APP_NOTES_HOST;
   const authToken = localStorage.getItem("auth-token");
   const [notes, setNotes] = useState([]);
-
+  const [favourites, setFavourites] = useState([]);
   const alertContext = useContext(AlertContext);
   const { showAlert } = alertContext;
-
+  
   // Function to fetch all notes
   const getNotes = async () => {
     try {
@@ -34,13 +34,14 @@ const NoteState = (props) => {
   };
 
   // Function to add a note with image and audio
-  const addNote = async (title, description, tag, audio, image) => {
+  const addNote = async (title, description, tag, audio, image,favourite) => {
     try {
       let url = `${host}/addnote`;
       const formData = new FormData();
       formData.append("title", title);
       formData.append("description", description);
       formData.append("tag", tag);
+      formData.append("favourite",favourite)
       if (audio) formData.append("audio", audio);
       if (image) formData.append("image", image);
 
@@ -144,60 +145,60 @@ const NoteState = (props) => {
       showAlert(`Error: ${error.message}`, "danger");
     }
   };
+  const getFavourites = async () => {
+    try {
+      let url = `${host}/fetchfavourites`;
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "auth-token": authToken,
+        },
+      });
+      const favouriteNotes = await response.json();
 
-  const toggleNoteFavourite = async (id) => {
-  try {
-    let url = `${host}/togglenotefavourite/${id}`;
-    const response = await fetch(url, {
-      method: "PUT",
-      headers: {
-        "auth-token": authToken,
-      },
-    });
-
-    const updatedNote = await response.json();
-    let newNotes = JSON.parse(JSON.stringify(notes));
-    for (let index = 0; index < newNotes.length; index++) {
-      if (newNotes[index]._id === updatedNote._id) {
-        newNotes[index] = updatedNote;
-        break;
+      if (response.ok) {
+        console.log("fetched")
+        showAlert("Fetched favourite notes", "info");
+        setFavourites(favouriteNotes);
+      } else {
+        console.log("Error:", favouriteNotes.error);
       }
+    } catch (error) {
+      showAlert(`Error: ${error.message}`, "danger");
     }
-    setNotes(newNotes);
-    showAlert("Note Favourite Status Updated", "info");
-  } catch (error) {
-    showAlert(`Error: ${error.message}`, "danger");
-  }
-};
+  };
 
-const fetchFavourites = async () => {
-  try {
-    let url = `${host}/fetchfavourites`;
-    const response = await fetch(url, {
-      method: "GET",
-      headers: {
-        "auth-token": authToken,
-      },
-    });
-    const favouriteNotes = await response.json();
-    return favouriteNotes;
-  } catch (error) {
-    showAlert(`Error: ${error.message}`, "danger");
-    return [];
-  }
-};
-
-return (
-  <NoteContext.Provider
-    value={{ notes, addNote, deleteNote, editNote, getNotes, deleteAllNotes, toggleNoteFavourite, fetchFavourites }}
-  >
-    {props.children}
-  </NoteContext.Provider>
-);
+  // Function to toggle favourite status
+  const toggleFavourite = async (id) => {
+    try {
+      let url = `${host}/togglenotefavourite/${id}`;
+      console.log("Sending request to:", url); 
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {
+          "auth-token": authToken,
+        },
+      });
+      
+      const updatedNote = await response.json();
+      console.log(updatedNote)
+      let newNotes = JSON.parse(JSON.stringify(notes));
+      for (let index = 0; index < newNotes.length; index++) {
+        if (newNotes[index]._id === updatedNote._id) {
+          newNotes[index] = updatedNote;
+          break;
+        }
+      }
+      setNotes(newNotes);
+      showAlert("Note Favourite Status Updated", "warning");
+    } catch (error) {
+      showAlert(`Error: ${error.message}`, "danger");
+    }
+  };
 
   return (
     <NoteContext.Provider
-      value={{ notes, addNote, deleteNote, editNote, getNotes, deleteAllNotes }}
+      value={{ notes, favourites, addNote, deleteNote, editNote, getNotes, deleteAllNotes, toggleFavourite, getFavourites }}
     >
       {props.children}
     </NoteContext.Provider>

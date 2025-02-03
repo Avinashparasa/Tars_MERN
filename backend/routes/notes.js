@@ -131,9 +131,12 @@ router.delete("/deleteallnotes", fetchuser, async (req, res) => {
   }
 });
 
+
 /* 📌 ROUTE 6: Toggle Favourite Status (PUT) */
 router.put("/togglenotefavourite/:id", fetchuser, async (req, res) => {
+  console.log("done");
   try {
+    
     let note = await Note.findById(req.params.id);
     if (!note) {
       return res.status(404).send({ error: "Note Not Found" });
@@ -144,7 +147,9 @@ router.put("/togglenotefavourite/:id", fetchuser, async (req, res) => {
 
     // Toggle the favourite status
     note.favourite = !note.favourite;
+    console.log(note)
     const updatedNote = await note.save();
+    console.log(note)
     res.status(200).send(updatedNote);
   } catch (error) {
     console.error(error.message);

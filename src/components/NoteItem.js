@@ -7,7 +7,7 @@ function truncateText(text, maxLength) {
     : text;
 }
 
-function NoteItem({ note, updateNote, nothing }) {
+function NoteItem({ note, updateNote, nothing ,what,toggleFavourite}) {
   const [showModal, setShowModal] = useState(false);
   const [descriptionText, setDescriptionText] = useState("");
   const modalBodyRef = useRef(null);
@@ -39,7 +39,9 @@ function NoteItem({ note, updateNote, nothing }) {
   };
 
   return (
-    <div className="col-md-4 mb-4">
+    
+    <div className="col-md-3 mb-4 mx-2">
+      
       <div className="card h-100 shadow-sm">
         <div className="card-body">
           <div className="d-flex justify-content-between align-items-center mb-3">
@@ -113,6 +115,7 @@ function NoteItem({ note, updateNote, nothing }) {
           </div>
         </div>
       )}
+      
     </div>
   );
 }

@@ -4,7 +4,7 @@ import NoteContext from "../context/notes/noteContext";
 function AddNote() {
   const context = useContext(NoteContext);
   const { addNote } = context;
-
+  const { notes, getNotes, editNote, toggleFavourite } = context;
   const [note, setNote] = useState({
     title: "",
     description: "",
@@ -36,25 +36,34 @@ function AddNote() {
   };
 
   // Handle Speech-to-Text
-  const handleVoiceInput = () => {
+  const handleVoiceInput = (noteId) => {
     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.lang = "en-US";
     recognition.continuous = false;
     recognition.interimResults = false;
-
-    recognition.onstart = () => setIsListening(true);
+    // localStorage.setItem(`trans-${noteId}`, JSON.stringify({ trans: true }));
+    recognition.onstart = () => {
+      setIsListening(true);
+      // Store transcription status in localStorage
+      // localStorage.setItem(`trans-${noteId}`, JSON.stringify({ trans: true }));
+    };
+  
     recognition.onresult = (event) => {
       const transcript = event.results[0][0].transcript;
       setNote((prevNote) => ({
         ...prevNote,
         description: prevNote.description + " " + transcript, // Append new text
+        
       }));
+      // localStorage.setItem(`trans-${noteId}`, JSON.stringify({ trans: true }));
     };
+  
     recognition.onerror = (event) => console.error("Speech recognition error:", event.error);
     recognition.onend = () => setIsListening(false);
-
+  
     recognition.start();
   };
+  
 
   // Handle Audio Recording
   const handleStartRecording = async () => {
@@ -98,8 +107,8 @@ function AddNote() {
     if (note.tag === "") {
       note.tag = "General";
     }
-    addNote(note.title, note.description, note.tag, note.audio, note.image);
-    setNote({ title: "", description: "", tag: "", audio: null, image: null });
+    addNote(note.title, note.description, note.tag, note.audio, note.image,false);
+    setNote({ title: "", description: "", tag: "", audio: null, image: null ,favourite:false});
     setAudioURL(null);
   };
 
@@ -123,7 +132,7 @@ function AddNote() {
 
         {/* Description */}
         <div className="form-group">
-          <label htmlFor="description">Description</label>
+          <label htmlFor="description">Description/Transcription</label>
           <div className="d-flex align-items-center">
             <textarea
               className="form-control"
@@ -138,7 +147,7 @@ function AddNote() {
             <button
               type="button"
               className={`btn btn-${isListening ? "danger" : "secondary"} mx-2`}
-              onClick={handleVoiceInput}
+              onClick={()=>handleVoiceInput(note.id)}
             >
               🎤 {isListening ? "Listening..." : "Speak"}
             </button>
@@ -199,6 +208,12 @@ function AddNote() {
             value={note.tag}
           />
         </div>
+        {/* <button
+              className="btn btn-warning mx-2"
+              onClick={() => toggleFavourite(note._id)}
+            >
+              {note.favourite ? "Unfavourite" : "Favourite"}
+            </button> */}
 
         {/* Submit Button */}
         <button

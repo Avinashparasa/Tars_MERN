@@ -1,63 +1,80 @@
-// import React, { useContext, useEffect, useState } from "react";
-// import NoteContext from "../context/notes/noteContext";
-// import NoteItem from "./NoteItem";
-
-// const Favourites = () => {
-//   const context = useContext(NoteContext);
-//   const { fetchFavourites } = context;
-//   const [favouriteNotes, setFavouriteNotes] = useState([]);
-
-//   useEffect(() => {
-//     const getFavourites = async () => {
-//       const favourites = await fetchFavourites();
-//       setFavouriteNotes(favourites);
-//     };
-//     getFavourites();
-//   }, []);
-
-//   return (
-//     <div className="row my-3">
-//       <h2>Favourite Notes</h2>
-//       <div className="container mx-3 my-3">
-//         <h3 className="text-center">
-//           {favouriteNotes.length === 0 && "No favourite notes to display!!"}
-//         </h3>
-//       </div>
-//       {favouriteNotes.map((note) => (
-//         <NoteItem key={note._id} note={note} />
-//       ))}
-//     </div>
-//   );
-// };
-
-// export default Favourites;
-import React, { useEffect, useState } from "react";
-import NoteItem from "./NoteItem";
+import React, { useContext, useEffect } from "react";
+import NoteContext from "../context/notes/noteContext";
+import { useNavigate } from "react-router-dom";
 
 const Favourites = () => {
-  const [favouriteNotes, setFavouriteNotes] = useState([]);
+  let navigate = useNavigate();
+  const context = useContext(NoteContext);
+  const { favourites, getFavourites } = context;
 
   useEffect(() => {
-    const storedFavourites = JSON.parse(localStorage.getItem("favouriteNotes")) || [];
-    setFavouriteNotes(storedFavourites);
+    if (localStorage.getItem("auth-token")) {
+      getFavourites();
+    } else {
+      navigate("/login");
+    }
+    // eslint-disable-next-line
   }, []);
 
   return (
-    <div className="container my-5">
-      <h2 className="text-center mb-4">Favourite Notes</h2>
-      <div className="row">
-        {favouriteNotes.length === 0 ? (
-          <div className="col-12 text-center">
-            <h3 className="text-muted">No favourite notes to display!</h3>
-          </div>
-        ) : (
-          favouriteNotes.map((note) => (
-            <div key={note._id} className="col-md-4 mb-4">
-              <NoteItem note={note} nothing={true} />
+    <div className="container my-4">
+      <h2 className="text-center mb-4 font-weight-bold">Your Favourite Notes</h2>
+
+      {favourites.length === 0 ? (
+        <h3 className="text-center text-muted">No favourite notes to display!</h3>
+      ) : (
+        <div className="row row-cols-1 row-cols-md-3 g-4">
+          {favourites.map((note) => (
+            <div key={note._id} className="col">
+              <div className="card shadow-sm h-100">
+                {/* Image Section */}
+                {note.image ? (
+                  <img
+                    src={`http://localhost:5000/${note.image}`}
+                    alt="Note"
+                    className="card-img-top"
+                    style={{ height: "120px", objectFit: "cover" }}
+                  />
+                ) : (
+                  <div
+                    className="d-flex align-items-center justify-content-center"
+                    style={{
+                      height: "120px",
+                      backgroundColor: "#f8f9fa",
+                      fontSize: "14px",
+                      color: "#6c757d",
+                    }}
+                  >
+                    No Image
+                  </div>
+                )}
+
+                {/* Card Body */}
+                <div className="card-body d-flex flex-column">
+                  <h5 className="card-title text-primary">{note.title}</h5>
+                  <p className="card-text text-truncate" style={{ maxHeight: "60px" }}>
+                    {note.description}
+                  </p>
+                  <p className="card-text">
+                    <small className="text-muted">{note.tag}</small>
+                  </p>
+
+                  {/* Audio Section */}
+                  {note.audio && (
+                    <audio controls className="w-100 mt-auto">
+                      <source
+                        src={`http://localhost:5000/${note.audio}`}
+                        type="audio/mpeg"
+                      />
+                      Your browser does not support the audio element.
+                    </audio>
+                  )}
+                </div>
+              </div>
             </div>
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

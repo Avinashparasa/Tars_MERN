@@ -13,9 +13,9 @@ function Navbar() {
   }
 
   return (
-    <nav className="navbar sticky-top navbar-expand-lg navbar-dark" style={{ backgroundColor: "#53b0b3" }}>
+    <nav className="navbar sticky-top navbar-expand-lg navbar-dark" style={{ backgroundColor: "black" }}>
       <div className="container-fluid">
-        <a className="navbar-brand" href="/" style={{ fontWeight: "bold" }}>MyNottebok</a>
+        <a className="navbar-brand" href="/" style={{ fontWeight: "bold" }}>DigitalNoteBook</a>
         <button
           className="navbar-toggler"
           type="button"
@@ -29,14 +29,14 @@ function Navbar() {
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
           <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-            <li className="nav-item">
+            {/* <li className="nav-item">
               <Link className={`nav-link ${location.pathname === "/" ? "active" : ""}`} aria-current="page" to="/">Home</Link>
+            </li> */}
+            <li className="nav-item">
+              <Link className={`nav-link ${location.pathname === "/about" ? "active" : ""}`} aria-current="page" to="/allnotes">AllNotes</Link>
             </li>
             <li className="nav-item">
-              <Link className={`nav-link ${location.pathname === "/about" ? "active" : ""}`} aria-current="page" to="/about">About</Link>
-            </li>
-            <li className="nav-item">
-              <Link className={`nav-link ${location.pathname === "/aboutUs" ? "active" : ""}`} aria-current="page" to="/aboutUs">About Us</Link>
+              <Link className={`nav-link ${location.pathname === "/aboutUs" ? "active" : ""}`} aria-current="page" to="/favourites">Favourites</Link>
             </li>
           </ul>
           {!localStorage.getItem("auth-token") ? (
